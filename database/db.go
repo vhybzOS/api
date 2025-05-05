@@ -20,7 +20,7 @@ func Initialize() error {
 	}
 
 	// Auto-migrate the schema
-	if err := DB.AutoMigrate(&User{}); err != nil {
+	if err := AutoMigrate(DB); err != nil {
 		log.Fatal("Failed to migrate database:", err)
 		return err
 	}

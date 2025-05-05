@@ -11,6 +11,10 @@ type Config struct {
 	Port      string
 	JWTSecret string
 	DBPath    string
+	// Azure OpenAI Configuration
+	AzureOpenAIEndpoint   string
+	AzureOpenAIKey        string
+	AzureOpenAIDeployment string
 }
 
 var AppConfig Config
@@ -23,14 +27,22 @@ func LoadConfig() {
 
 	// Set default values
 	AppConfig = Config{
-		Port:      getEnv("PORT", "8080"),
-		JWTSecret: getEnv("JWT_SECRET", "your-default-secret-key"),
-		DBPath:    getEnv("DB_PATH", "app.db"),
+		Port:                  getEnv("PORT", "8080"),
+		JWTSecret:             getEnv("JWT_SECRET", "your-default-secret-key"),
+		DBPath:                getEnv("DB_PATH", "app.db"),
+		AzureOpenAIEndpoint:   getEnv("AZURE_OPENAI_ENDPOINT", ""),
+		AzureOpenAIKey:        getEnv("AZURE_OPENAI_KEY", ""),
+		AzureOpenAIDeployment: getEnv("AZURE_OPENAI_DEPLOYMENT", ""),
 	}
 
 	// Validate required configurations
 	if AppConfig.JWTSecret == "your-default-secret-key" {
 		log.Println("Warning: Using default JWT secret key. Please set JWT_SECRET in your environment variables.")
+	}
+
+	// Validate Azure OpenAI configuration
+	if AppConfig.AzureOpenAIEndpoint == "" || AppConfig.AzureOpenAIKey == "" || AppConfig.AzureOpenAIDeployment == "" {
+		log.Println("Warning: Azure OpenAI configuration is incomplete. Please set AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT in your environment variables.")
 	}
 }
 

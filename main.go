@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/vhybZApp/api.git/azure"
 	"github.com/vhybZApp/api.git/config"
 	"github.com/vhybZApp/api.git/database"
 )
@@ -49,6 +50,12 @@ func main() {
 		auth.POST("/login", login)
 		auth.POST("/refresh", refresh)
 		auth.GET("/profile", authMiddleware(), getProfile)
+	}
+
+	// Azure OpenAI routes
+	azureGroup := r.Group("/azure")
+	{
+		azureGroup.POST("/chat/completions", authMiddleware(), azure.ChatCompletion)
 	}
 
 	// Start server

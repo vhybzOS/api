@@ -90,7 +90,7 @@ func register(c *gin.Context) {
 		return
 	}
 
-	var user database.User
+	var user database.DBUser
 	user.Username = req.Username
 	user.Email = req.Email
 	if err := user.HashPassword(req.Password); err != nil {
@@ -123,7 +123,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	var user database.User
+	var user database.DBUser
 	if err := database.GetDB().Where("username = ?", req.Username).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, models.NewErrorResponse("Invalid credentials"))
 		return
@@ -215,7 +215,7 @@ func refresh(c *gin.Context) {
 // @Router /profile [get]
 func getProfile(c *gin.Context) {
 	username := c.GetString("username")
-	var user database.User
+	var user database.DBUser
 	if err := database.GetDB().Where("username = ?", username).First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, models.NewErrorResponse("User not found"))
 		return
