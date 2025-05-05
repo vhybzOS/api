@@ -16,6 +16,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.21'
+
+      - name: Install swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+
+      - name: Generate Swagger docs
+        run: swag init -g main.go
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -24,25 +35,10 @@ jobs:
       - name: Install OpenAPI Generator
         run: npm install @openapitools/openapi-generator-cli -g
 
-      - name: Generate Swagger JSON
-        run: |
-          # Start the server in the background
-          go run main.go &
-          SERVER_PID=$!
-          
-          # Wait for server to start
-          sleep 20
-          
-          # Download Swagger JSON
-          curl -o swagger.json http://localhost:8080/swagger/doc.json
-          
-          # Stop the server
-          kill $SERVER_PID
-
       - name: Generate TypeScript SDK
         run: |
           openapi-generator-cli generate \
-            -i swagger.json \
+            -i docs/swagger.json \
             -g typescript-axios \
             -o sdk/typescript \
             --additional-properties=npmName=@vhybz/api-sdk,npmVersion=${{ github.sha }},supportsES6=true,useSingleRequestParameter=true
