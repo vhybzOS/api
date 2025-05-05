@@ -81,4 +81,5 @@ jobs:
           files: sdk/typescript/package.json
           generate_release_notes: true
           draft: false
-          prerelease: false 
+          prerelease: false
+          tag_name: ${{ github.ref_name }}-sdk-${{ env.FULL_VERSION }} 
