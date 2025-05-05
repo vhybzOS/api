@@ -37,11 +37,18 @@ jobs:
 
       - name: Generate TypeScript SDK
         run: |
+          # Get the current date in YYYY.MM.DD format
+          VERSION=$(date +%Y.%-m.%-d)
+          # Get the short SHA
+          SHA=$(git rev-parse --short HEAD)
+          # Combine them into a valid version
+          FULL_VERSION="${VERSION}-${SHA}"
+          
           openapi-generator-cli generate \
             -i docs/swagger.json \
             -g typescript-axios \
             -o sdk/typescript \
-            --additional-properties=npmName=@vhybz/api-sdk,npmVersion=${{ github.sha }},supportsES6=true,useSingleRequestParameter=true
+            --additional-properties=npmName=@vhybz/api-sdk,npmVersion=$FULL_VERSION,supportsES6=true,useSingleRequestParameter=true
 
       - name: Configure npm
         run: |
