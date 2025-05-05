@@ -46,9 +46,12 @@ jobs:
       - name: Configure npm
         run: |
           cd sdk/typescript
+          # Set GitHub Packages authentication
           npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GITHUB_TOKEN }}
+          # Set GitHub Packages registry only for @vhybz scope
           npm config set @vhybz:registry https://npm.pkg.github.com
-          npm config set scope @vhybz
+          # Set default registry to npm
+          npm config set registry https://registry.npmjs.org/
 
       - name: Install dependencies and build
         run: |
