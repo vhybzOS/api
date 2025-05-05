@@ -162,10 +162,7 @@ func login(c *gin.Context) {
 // @Failure 401 {object} models.ErrorResponse
 // @Router /auth/refresh [post]
 func refresh(c *gin.Context) {
-	var req struct {
-		RefreshToken string `json:"refresh_token" binding:"required"`
-	}
-
+	var req models.RefreshRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, models.NewErrorResponse(err.Error()))
 		return

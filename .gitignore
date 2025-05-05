@@ -4,3 +4,6 @@ sdk/typescript/dist/
 sdk/typescript/build/
 
 # ... existing code ... 
+docs/swagger.json
+docs/swagger.yaml
+docs/docs.go
