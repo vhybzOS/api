@@ -14,6 +14,7 @@ import (
 	"github.com/vhybZApp/api.git/services"
 )
 
+// ChatCompletionRequest represents the request body for chat completion
 type ChatCompletionRequest struct {
 	Messages         []Message `json:"messages"`
 	MaxTokens        int       `json:"max_tokens,omitempty"`
@@ -24,11 +25,13 @@ type ChatCompletionRequest struct {
 	Stop             []string  `json:"stop,omitempty"`
 }
 
+// Message represents a single message in the chat
 type Message struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 
+// ChatCompletionResponse represents the response from Azure OpenAI
 type ChatCompletionResponse struct {
 	ID      string   `json:"id"`
 	Object  string   `json:"object"`
@@ -38,27 +41,31 @@ type ChatCompletionResponse struct {
 	Usage   Usage    `json:"usage"`
 }
 
+// Choice represents a single choice in the completion response
 type Choice struct {
 	Index        int     `json:"index"`
 	Message      Message `json:"message"`
 	FinishReason string  `json:"finish_reason"`
 }
 
+// Usage represents token usage information
 type Usage struct {
 	PromptTokens     int `json:"prompt_tokens"`
 	CompletionTokens int `json:"completion_tokens"`
 	TotalTokens      int `json:"total_tokens"`
 }
 
-// @Summary Proxy Azure OpenAI Chat Completion
-// @Description Proxy requests to Azure OpenAI Chat Completion API
+// @Summary Get chat completion from Azure OpenAI
+// @Description Get a chat completion response from Azure OpenAI API
 // @Tags azure
 // @Accept json
 // @Produce json
-// @Param request body ChatCompletionRequest true "Chat completion request"
+// @Security BearerAuth
+// @Param request body ChatCompletionRequest true "Chat completion request parameters"
 // @Success 200 {object} ChatCompletionResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 401 {object} models.ErrorResponse
+// @Failure 429 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /azure/chat/completions [post]
 func ChatCompletion(c *gin.Context) {

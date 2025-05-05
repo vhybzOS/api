@@ -1,0 +1,74 @@
+name: Generate and Publish TypeScript SDK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  generate-sdk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install OpenAPI Generator
+        run: npm install @openapitools/openapi-generator-cli -g
+
+      - name: Generate Swagger JSON
+        run: |
+          # Start the server in the background
+          go run main.go &
+          SERVER_PID=$!
+          
+          # Wait for server to start
+          sleep 5
+          
+          # Download Swagger JSON
+          curl -o swagger.json http://localhost:8080/swagger/doc.json
+          
+          # Stop the server
+          kill $SERVER_PID
+
+      - name: Generate TypeScript SDK
+        run: |
+          openapi-generator-cli generate \
+            -i swagger.json \
+            -g typescript-axios \
+            -o sdk/typescript \
+            --additional-properties=npmName=@vhybz/api-sdk,npmVersion=${{ github.sha }},supportsES6=true,useSingleRequestParameter=true
+
+      - name: Configure npm
+        run: |
+          cd sdk/typescript
+          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GITHUB_TOKEN }}
+          npm config set @vhybz:registry https://npm.pkg.github.com
+          npm config set scope @vhybz
+
+      - name: Install dependencies and build
+        run: |
+          cd sdk/typescript
+          npm install
+          npm run build
+
+      - name: Publish to GitHub Packages
+        run: |
+          cd sdk/typescript
+          npm publish --access public
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: sdk/typescript/package.json
+          generate_release_notes: true
+          draft: false
+          prerelease: false 

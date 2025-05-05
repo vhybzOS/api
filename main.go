@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -11,23 +12,27 @@ import (
 	"github.com/vhybZApp/api.git/database"
 )
 
-// @title           RESTful API with JWT Authentication
-// @version         1.0
-// @description     A simple RESTful server with JWT authentication
+// @title           Vhybz API
+// @version         1.0.0
+// @description     API for Vhybz application with JWT authentication and Azure OpenAI integration
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
+// @contact.url    https://github.com/vhybZApp/api
+// @contact.email  support@vhybz.com
 
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host      localhost:8080
 // @BasePath  /
+// @schemes   http https
+
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
+// @description JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"
+
 func main() {
 	// Load configuration
 	config.LoadConfig()
@@ -40,7 +45,15 @@ func main() {
 	// Create Gin router
 	r := gin.Default()
 
+	// Health check endpoint
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "healthy",
+		})
+	})
+
 	// Swagger documentation
+	
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Auth routes

@@ -74,15 +74,15 @@ func authMiddleware() gin.HandlerFunc {
 }
 
 // @Summary Register a new user
-// @Description Register a new user with username, password, and email
+// @Description Create a new user account with username, email, and password
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param user body models.RegisterRequest true "User registration details"
+// @Param user body models.RegisterRequest true "User registration data"
 // @Success 201 {object} models.RegisterResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
-// @Router /register [post]
+// @Router /auth/register [post]
 func register(c *gin.Context) {
 	var req models.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -107,15 +107,15 @@ func register(c *gin.Context) {
 }
 
 // @Summary Login user
-// @Description Login user with username and password
+// @Description Authenticate user with email and password, return JWT tokens
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param credentials body models.LoginRequest true "User login credentials"
+// @Param credentials body models.LoginRequest true "Login credentials"
 // @Success 200 {object} models.TokenResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 401 {object} models.ErrorResponse
-// @Router /login [post]
+// @Router /auth/login [post]
 func login(c *gin.Context) {
 	var req models.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -156,11 +156,11 @@ func login(c *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param refresh_token body string true "Refresh token"
+// @Param refresh body models.RefreshRequest true "Refresh token"
 // @Success 200 {object} models.TokenResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 401 {object} models.ErrorResponse
-// @Router /refresh [post]
+// @Router /auth/refresh [post]
 func refresh(c *gin.Context) {
 	var req struct {
 		RefreshToken string `json:"refresh_token" binding:"required"`
@@ -204,15 +204,13 @@ func refresh(c *gin.Context) {
 }
 
 // @Summary Get user profile
-// @Description Get the profile of the authenticated user
+// @Description Get the authenticated user's profile information
 // @Tags auth
-// @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} models.ProfileResponse
+// @Success 200 {object} models.User
 // @Failure 401 {object} models.ErrorResponse
-// @Failure 404 {object} models.ErrorResponse
-// @Router /profile [get]
+// @Router /auth/profile [get]
 func getProfile(c *gin.Context) {
 	username := c.GetString("username")
 	var user database.DBUser
