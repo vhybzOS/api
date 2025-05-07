@@ -12,6 +12,9 @@ RUN go mod download
 # Copy the source code
 COPY . .
 
+# Run swagger
+RUN swag init -g main.go
+
 # Build the application
 RUN CGO_ENABLED=1 GOOS=linux go build -o main .
 
