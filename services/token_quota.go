@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/vhybZApp/api/database"
 	"gorm.io/gorm"
 )
@@ -17,7 +18,7 @@ func NewTokenQuotaService(db *gorm.DB) *TokenQuotaService {
 }
 
 // GetUserQuota returns the daily token quota for a user
-func (s *TokenQuotaService) GetUserQuota(userID string) (*database.DBTokenQuota, error) {
+func (s *TokenQuotaService) GetUserQuota(userID uuid.UUID) (*database.DBTokenQuota, error) {
 	var quota database.DBTokenQuota
 	result := s.db.Where("user_id = ?", userID).First(&quota)
 	if result.Error != nil {
@@ -38,7 +39,7 @@ func (s *TokenQuotaService) GetUserQuota(userID string) (*database.DBTokenQuota,
 }
 
 // GetDailyUsage returns the token usage for a user on a specific date
-func (s *TokenQuotaService) GetDailyUsage(userID string, date time.Time) (*database.DBTokenUsage, error) {
+func (s *TokenQuotaService) GetDailyUsage(userID uuid.UUID, date time.Time) (*database.DBTokenUsage, error) {
 	var usage database.DBTokenUsage
 	startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
 	result := s.db.Where("user_id = ? AND date = ?", userID, startOfDay).First(&usage)
@@ -61,7 +62,7 @@ func (s *TokenQuotaService) GetDailyUsage(userID string, date time.Time) (*datab
 }
 
 // UpdateUsage updates the token usage for a user
-func (s *TokenQuotaService) UpdateUsage(userID string, tokens int) error {
+func (s *TokenQuotaService) UpdateUsage(userID uuid.UUID, tokens int) error {
 	now := time.Now()
 
 	// Get or create daily usage

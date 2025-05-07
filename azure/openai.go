@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/vhybZApp/api/config"
 	"github.com/vhybZApp/api/database"
 	"github.com/vhybZApp/api/models"
@@ -79,6 +80,12 @@ func ChatCompletion(c *gin.Context) {
 	// Initialize token quota service
 	tokenQuotaService := services.NewTokenQuotaService(database.GetDB())
 
+	// Check if user has enough quota for a reasonable estimate (e.g., 1000 tokens)
+	if err := tokenQuotaService.UpdateUsage(userID.(uuid.UUID), 1000); err != nil {
+		c.JSON(http.StatusTooManyRequests, models.NewErrorResponse(err.Error()))
+		return
+	}
+
 	// Validate Azure OpenAI configuration
 	if config.AppConfig.AzureOpenAIEndpoint == "" || config.AppConfig.AzureOpenAIKey == "" || config.AppConfig.AzureOpenAIDeployment == "" {
 		c.JSON(http.StatusInternalServerError, models.NewErrorResponse("Azure OpenAI configuration is incomplete"))
@@ -94,7 +101,7 @@ func ChatCompletion(c *gin.Context) {
 
 	// Create HTTP client
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 300 * time.Second,
 	}
 
 	// Marshal request body
@@ -105,7 +112,9 @@ func ChatCompletion(c *gin.Context) {
 	}
 
 	// Create request
-	url := config.AppConfig.AzureOpenAIEndpoint + "/openai/deployments/" + config.AppConfig.AzureOpenAIDeployment + "/chat/completions?api-version=2023-05-15"
+	url := config.AppConfig.AzureOpenAIEndpoint + "/openai/deployments/" +
+		config.AppConfig.AzureOpenAIDeployment + "/chat/completions?api-version=" + config.AppConfig.AzureOpenAIDeploymentVersion
+
 	httpReq, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.NewErrorResponse("Error creating request"))
@@ -141,14 +150,7 @@ func ChatCompletion(c *gin.Context) {
 	var chatResp ChatCompletionResponse
 	if err := json.Unmarshal(body, &chatResp); err != nil {
 		c.JSON(http.StatusInternalServerError, models.NewErrorResponse("Error parsing response"))
-		return
-	}
-
-	// Update token usage
-	if err := tokenQuotaService.UpdateUsage(userID.(string), chatResp.Usage.TotalTokens); err != nil {
-		c.JSON(http.StatusTooManyRequests, models.NewErrorResponse(err.Error()))
-		return
-	}
+		returnasdu
 
 	c.JSON(http.StatusOK, chatResp)
 }

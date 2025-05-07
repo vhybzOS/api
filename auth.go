@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -39,6 +40,7 @@ func generateToken(username, tokenType string, expiresIn time.Duration) (string,
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
+		fmt.Println(tokenString)
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, models.NewErrorResponse("Authorization header is required"))
 			c.Abort()
@@ -68,7 +70,17 @@ func authMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// Get user from database to get the ID
+		var user database.DBUser
+		if err := database.GetDB().Where("username = ?", claims.Username).First(&user).Error; err != nil {
+			c.JSON(http.StatusUnauthorized, models.NewErrorResponse("User not found"))
+			c.Abort()
+			return
+		}
+
+		// Set both username and user_id in context
 		c.Set("username", claims.Username)
+		c.Set("user_id", user.ID)
 		c.Next()
 	}
 }

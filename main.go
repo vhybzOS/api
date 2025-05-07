@@ -3,13 +3,14 @@ package main
 import (
 	"log"
 	"net/http"
-	_ "github.com/vhybZApp/api/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/vhybZApp/api/azure"
 	"github.com/vhybZApp/api/config"
 	"github.com/vhybZApp/api/database"
+	_ "github.com/vhybZApp/api/docs"
 )
 
 // @title           Vhybz API
