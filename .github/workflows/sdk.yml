@@ -48,7 +48,7 @@ jobs:
             -i docs/swagger.json \
             -g typescript-axios \
             -o sdk/typescript \
-            --additional-properties=npmName=@vhybzOS/api,npmVersion=$FULL_VERSION,supportsES6=true,useSingleRequestParameter=true,public=true
+            --additional-properties=npmName=@vhybzOS/api,npmVersion=$FULL_VERSION,supportsES6=true,useSingleRequestParameter=true,useSingleClass=true,public=true
 
       - name: Configure npm
         run: |
