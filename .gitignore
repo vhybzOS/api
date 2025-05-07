@@ -7,3 +7,4 @@ sdk/typescript/build/
 docs/swagger.json
 docs/swagger.yaml
 docs/docs.go
+app.db
