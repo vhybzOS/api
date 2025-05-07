@@ -13,7 +13,7 @@ RUN go mod download
 COPY . .
 
 # Run swagger
-RUN swag init -g main.go
+RUN go install github.com/swaggo/swag/cmd/swag@latest && swag init -g main.go
 
 # Build the application
 RUN CGO_ENABLED=1 GOOS=linux go build -o main .
