@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vhybZApp/api.git/config"
-	"github.com/vhybZApp/api.git/database"
-	"github.com/vhybZApp/api.git/models"
-	"github.com/vhybZApp/api.git/services"
+	"github.com/vhybZApp/api/config"
+	"github.com/vhybZApp/api/database"
+	"github.com/vhybZApp/api/models"
+	"github.com/vhybZApp/api/services"
 )
 
 // ChatCompletionRequest represents the request body for chat completion

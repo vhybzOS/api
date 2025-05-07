@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/vhybZApp/api.git/config"
-	"github.com/vhybZApp/api.git/database"
-	"github.com/vhybZApp/api.git/models"
+	"github.com/vhybZApp/api/config"
+	"github.com/vhybZApp/api/database"
+	"github.com/vhybZApp/api/models"
 )
 
 type Claims struct {

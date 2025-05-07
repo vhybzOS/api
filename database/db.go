@@ -3,7 +3,7 @@ package database
 import (
 	"log"
 
-	"github.com/vhybZApp/api.git/config"
+	"github.com/vhybZApp/api/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

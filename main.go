@@ -3,13 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
-
+	_ "github.com/vhybZApp/api/docs"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/vhybZApp/api.git/azure"
-	"github.com/vhybZApp/api.git/config"
-	"github.com/vhybZApp/api.git/database"
+	"github.com/vhybZApp/api/azure"
+	"github.com/vhybZApp/api/config"
+	"github.com/vhybZApp/api/database"
 )
 
 // @title           Vhybz API
@@ -53,7 +53,7 @@ func main() {
 	})
 
 	// Swagger documentation
-	
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Auth routes

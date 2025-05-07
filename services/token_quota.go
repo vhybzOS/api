@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/vhybZApp/api.git/database"
+	"github.com/vhybZApp/api/database"
 	"gorm.io/gorm"
 )
 
