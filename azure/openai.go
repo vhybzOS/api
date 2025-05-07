@@ -150,7 +150,14 @@ func ChatCompletion(c *gin.Context) {
 	var chatResp ChatCompletionResponse
 	if err := json.Unmarshal(body, &chatResp); err != nil {
 		c.JSON(http.StatusInternalServerError, models.NewErrorResponse("Error parsing response"))
-		returnasdu
+		return
+	}
+
+	// Update token usage with actual tokens used
+	if err := tokenQuotaService.UpdateUsage(userID.(uuid.UUID), chatResp.Usage.TotalTokens); err != nil {
+		c.JSON(http.StatusTooManyRequests, models.NewErrorResponse(err.Error()))
+		return
+	}
 
 	c.JSON(http.StatusOK, chatResp)
 }
