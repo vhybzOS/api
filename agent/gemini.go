@@ -41,14 +41,14 @@ type HTMLResponse struct {
 // MakeHTML godoc
 // @Summary Generate HTML using Gemini AI
 // @Description Generates HTML code based on the provided content using Gemini AI
-// @Tags html
+// @Tags agent
 // @Accept json
 // @Produce json
 // @Param request body HTMLRequest true "Request body containing content parts"
 // @Success 200 {object} HTMLResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
-// @Router /html [post]
+// @Router /agent/make-html [post]
 func MakeHTML(c *gin.Context) {
 	var req HTMLRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

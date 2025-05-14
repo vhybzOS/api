@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/vhybZApp/api/agent"
 	"github.com/vhybZApp/api/azure"
 	"github.com/vhybZApp/api/config"
 	"github.com/vhybZApp/api/database"
@@ -70,6 +71,12 @@ func main() {
 	azureGroup := r.Group("/azure")
 	{
 		azureGroup.POST("/chat/completions", authMiddleware(), azure.ChatCompletion)
+	}
+
+	//  Agent routes
+	agentGroup := r.Group("/agent")
+	{
+		agentGroup.POST("/agent/make-html", authMiddleware(), agent.MakeHTML)
 	}
 
 	// Start server
